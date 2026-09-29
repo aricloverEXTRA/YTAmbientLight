@@ -1,0 +1,34 @@
+/* YTAmbientLight - Русский */
+
+"YTAMBIENTLIGHT_TITLE" = "Окружающий свет";
+"YTAMBIENTLIGHT_ENABLED" = "Включить окружающий свет";
+"YTAMBIENTLIGHT_MODE" = "Режим окружающего света";
+"YTAMBIENTLIGHT_COLOR" = "Цвет окружающего света";
+"YTAMBIENTLIGHT_INTENSITY" = "Интенсивность";
+"YTAMBIENTLIGHT_BLUR" = "Радиус размытия";
+"YTAMBIENTLIGHT_USE_VIDEO" = "Извлекать цвета из видео";
+"YTAMBIENTLIGHT_STATIC_IMAGE" = "Путь к пользовательскому изображению";
+"YTAMBIENTLIGHT_WATCHNEXT" = "Применить к боковой панели WatchNext";
+"YTAMBIENTLIGHT_FULLSCREEN" = "Применить к полноэкранному плееру";
+"YTAMBIENTLIGHT_DISABLE_FADE" = "Отключить анимацию затухания";
+"YTAMBIENTLIGHT_SYNC_PLAYER" = "Синхронизировать с цветами плеера";
+
+"YTAMBIENTLIGHT_MODE_DYNAMIC" = "Динамический (размытие)";
+"YTAMBIENTLIGHT_MODE_STATIC_COLOR" = "Статический цвет";
+"YTAMBIENTLIGHT_MODE_STATIC_IMAGE" = "Статичное изображение";
+"YTAMBIENTLIGHT_MODE_DISABLED" = "Отключено";
+
+"YTAMBIENTLIGHT_IMAGE_PLACEHOLDER" = "/var/mobile/Documents/ambient.jpg";
+"YTAMBIENTLIGHT_GROUP_MAIN" = "Основное";
+"YTAMBIENTLIGHT_GROUP_ADVANCED" = "Дополнительно";
+"YTAMBIENTLIGHT_ENABLED_DESC" = "Включить настраиваемый окружающий свет для видеоплеера";
+"YTAMBIENTLIGHT_MODE_DESC" = "Выбрать поведение окружающего света";
+"YTAMBIENTLIGHT_INTENSITY_DESC" = "Настроить интенсивность эффекта окружающего света";
+"YTAMBIENTLIGHT_BLUR_DESC" = "Настроить радиус размытия для динамического эффекта";
+"YTAMBIENTLIGHT_COLOR_DESC" = "Выбрать пользовательский цвет для статического режима";
+"YTAMBIENTLIGHT_USE_VIDEO_DESC" = "Автоматически извлекать цвета окружающего света из воспроизводимого видео";
+"YTAMBIENTLIGHT_STATIC_IMAGE_DESC" = "Выбрать пользовательское изображение для режима статичного изображения";
+"YTAMBIENTLIGHT_WATCHNEXT_DESC" = "Применить эффект окружающего света к боковой панели WatchNext";
+"YTAMBIENTLIGHT_FULLSCREEN_DESC" = "Применить эффект окружающего света к полноэкранному плееру";
+"YTAMBIENTLIGHT_DISABLE_FADE_DESC" = "Отключить динамическое затухание YouTube";
+"YTAMBIENTLIGHT_SYNC_PLAYER_DESC" = "Синхронизировать цвета окружающего света с видеоплеером";

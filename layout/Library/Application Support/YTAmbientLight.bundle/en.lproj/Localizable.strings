@@ -1,0 +1,34 @@
+/* YTAmbientLight - English */
+
+"YTAMBIENTLIGHT_TITLE" = "Ambient Light";
+"YTAMBIENTLIGHT_ENABLED" = "Enable Ambient Light";
+"YTAMBIENTLIGHT_MODE" = "Ambient Mode";
+"YTAMBIENTLIGHT_COLOR" = "Ambient Color";
+"YTAMBIENTLIGHT_INTENSITY" = "Intensity";
+"YTAMBIENTLIGHT_BLUR" = "Blur Radius";
+"YTAMBIENTLIGHT_USE_VIDEO" = "Extract Colors from Video";
+"YTAMBIENTLIGHT_STATIC_IMAGE" = "Custom Image Path";
+"YTAMBIENTLIGHT_WATCHNEXT" = "Apply to WatchNext Sidebar";
+"YTAMBIENTLIGHT_FULLSCREEN" = "Apply to Fullscreen Player";
+"YTAMBIENTLIGHT_DISABLE_FADE" = "Disable Fading Animation";
+"YTAMBIENTLIGHT_SYNC_PLAYER" = "Sync with Player Colors";
+
+"YTAMBIENTLIGHT_MODE_DYNAMIC" = "Dynamic (Blur)";
+"YTAMBIENTLIGHT_MODE_STATIC_COLOR" = "Static Color";
+"YTAMBIENTLIGHT_MODE_STATIC_IMAGE" = "Static Image";
+"YTAMBIENTLIGHT_MODE_DISABLED" = "Disabled";
+
+"YTAMBIENTLIGHT_IMAGE_PLACEHOLDER" = "/var/mobile/Documents/ambient.jpg";
+"YTAMBIENTLIGHT_GROUP_MAIN" = "Main";
+"YTAMBIENTLIGHT_GROUP_ADVANCED" = "Advanced";
+"YTAMBIENTLIGHT_ENABLED_DESC" = "Enable customizable ambient lighting for the video player";
+"YTAMBIENTLIGHT_MODE_DESC" = "Choose how the ambient light behaves";
+"YTAMBIENTLIGHT_INTENSITY_DESC" = "Adjust the intensity of the ambient light effect";
+"YTAMBIENTLIGHT_BLUR_DESC" = "Adjust the blur radius for the dynamic ambient effect";
+"YTAMBIENTLIGHT_COLOR_DESC" = "Choose a custom color for static color mode";
+"YTAMBIENTLIGHT_USE_VIDEO_DESC" = "Automatically extract ambient colors from the playing video";
+"YTAMBIENTLIGHT_STATIC_IMAGE_DESC" = "Select a custom image for the static image mode";
+"YTAMBIENTLIGHT_WATCHNEXT_DESC" = "Apply the ambient effect to the WatchNext sidebar";
+"YTAMBIENTLIGHT_FULLSCREEN_DESC" = "Apply the ambient effect to the fullscreen player";
+"YTAMBIENTLIGHT_DISABLE_FADE_DESC" = "Disable YouTube's dynamic fading animation";
+"YTAMBIENTLIGHT_SYNC_PLAYER_DESC" = "Sync ambient colors with the video player";

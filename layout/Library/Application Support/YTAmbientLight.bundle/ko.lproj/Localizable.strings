@@ -1,0 +1,34 @@
+/* YTAmbientLight - 한국어 */
+
+"YTAMBIENTLIGHT_TITLE" = "주변 조명";
+"YTAMBIENTLIGHT_ENABLED" = "주변 조명 활성화";
+"YTAMBIENTLIGHT_MODE" = "주변 조명 모드";
+"YTAMBIENTLIGHT_COLOR" = "주변 조명 색상";
+"YTAMBIENTLIGHT_INTENSITY" = "강도";
+"YTAMBIENTLIGHT_BLUR" = "블러 반경";
+"YTAMBIENTLIGHT_USE_VIDEO" = "비디오에서 색상 추출";
+"YTAMBIENTLIGHT_STATIC_IMAGE" = "사용자 지정 이미지 경로";
+"YTAMBIENTLIGHT_WATCHNEXT" = "WatchNext 사이드바에 적용";
+"YTAMBIENTLIGHT_FULLSCREEN" = "전체 화면 플레이어에 적용";
+"YTAMBIENTLIGHT_DISABLE_FADE" = "페이드 애니메이션 비활성화";
+"YTAMBIENTLIGHT_SYNC_PLAYER" = "플레이어 색상과 동기화";
+
+"YTAMBIENTLIGHT_MODE_DYNAMIC" = "동적 (블러)";
+"YTAMBIENTLIGHT_MODE_STATIC_COLOR" = "정적 색상";
+"YTAMBIENTLIGHT_MODE_STATIC_IMAGE" = "정적 이미지";
+"YTAMBIENTLIGHT_MODE_DISABLED" = "비활성화";
+
+"YTAMBIENTLIGHT_IMAGE_PLACEHOLDER" = "/var/mobile/Documents/ambient.jpg";
+"YTAMBIENTLIGHT_GROUP_MAIN" = "메인";
+"YTAMBIENTLIGHT_GROUP_ADVANCED" = "고급";
+"YTAMBIENTLIGHT_ENABLED_DESC" = "동영상 플레이어의 사용자 지정 가능한 주변 조명 활성화";
+"YTAMBIENTLIGHT_MODE_DESC" = "주변 조명의 동작 방식 선택";
+"YTAMBIENTLIGHT_INTENSITY_DESC" = "주변 조명 효과의 강도 조절";
+"YTAMBIENTLIGHT_BLUR_DESC" = "동적 주변 조명 효과의 블러 반경 조절";
+"YTAMBIENTLIGHT_COLOR_DESC" = "정적 색상 모드의 사용자 지정 색상 선택";
+"YTAMBIENTLIGHT_USE_VIDEO_DESC" = "재생 중인 비디오에서 주변 조명 색상 자동 추출";
+"YTAMBIENTLIGHT_STATIC_IMAGE_DESC" = "정적 이미지 모드의 사용자 지정 이미지 선택";
+"YTAMBIENTLIGHT_WATCHNEXT_DESC" = "WatchNext 사이드바에 주변 조명 효과 적용";
+"YTAMBIENTLIGHT_FULLSCREEN_DESC" = "전체 화면 플레이어에 주변 조명 효과 적용";
+"YTAMBIENTLIGHT_DISABLE_FADE_DESC" = "YouTube의 동적 페이드 애니메이션 비활성화";
+"YTAMBIENTLIGHT_SYNC_PLAYER_DESC" = "주변 조명 색상을 플레이어와 동기화";

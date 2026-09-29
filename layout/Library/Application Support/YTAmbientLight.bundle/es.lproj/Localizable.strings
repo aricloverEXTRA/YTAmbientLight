@@ -1,0 +1,34 @@
+/* YTAmbientLight - Español */
+
+"YTAMBIENTLIGHT_TITLE" = "Luz Ambiental";
+"YTAMBIENTLIGHT_ENABLED" = "Activar Luz Ambiental";
+"YTAMBIENTLIGHT_MODE" = "Modo de Luz Ambiental";
+"YTAMBIENTLIGHT_COLOR" = "Color de Luz Ambiental";
+"YTAMBIENTLIGHT_INTENSITY" = "Intensidad";
+"YTAMBIENTLIGHT_BLUR" = "Radio de Desenfoque";
+"YTAMBIENTLIGHT_USE_VIDEO" = "Extraer Colores del Video";
+"YTAMBIENTLIGHT_STATIC_IMAGE" = "Ruta de Imagen Personalizada";
+"YTAMBIENTLIGHT_WATCHNEXT" = "Aplicar a Barra Lateral WatchNext";
+"YTAMBIENTLIGHT_FULLSCREEN" = "Aplicar a Pantalla Completa";
+"YTAMBIENTLIGHT_DISABLE_FADE" = "Desactivar Animación de Desvanecimiento";
+"YTAMBIENTLIGHT_SYNC_PLAYER" = "Sincronizar con Colores del Reproductor";
+
+"YTAMBIENTLIGHT_MODE_DYNAMIC" = "Dinámico (Desenfoque)";
+"YTAMBIENTLIGHT_MODE_STATIC_COLOR" = "Color Estático";
+"YTAMBIENTLIGHT_MODE_STATIC_IMAGE" = "Imagen Estática";
+"YTAMBIENTLIGHT_MODE_DISABLED" = "Desactivado";
+
+"YTAMBIENTLIGHT_IMAGE_PLACEHOLDER" = "/var/mobile/Documents/ambient.jpg";
+"YTAMBIENTLIGHT_GROUP_MAIN" = "Principal";
+"YTAMBIENTLIGHT_GROUP_ADVANCED" = "Avanzado";
+"YTAMBIENTLIGHT_ENABLED_DESC" = "Activar iluminación ambiental personalizable para el reproductor de video";
+"YTAMBIENTLIGHT_MODE_DESC" = "Elige cómo se comporta la luz ambiental";
+"YTAMBIENTLIGHT_INTENSITY_DESC" = "Ajusta la intensidad del efecto de luz ambiental";
+"YTAMBIENTLIGHT_BLUR_DESC" = "Ajusta el radio de desenfoque para el efecto dinámico";
+"YTAMBIENTLIGHT_COLOR_DESC" = "Elige un color personalizado para el modo estático";
+"YTAMBIENTLIGHT_USE_VIDEO_DESC" = "Extraer automáticamente colores ambientales del video en reproducción";
+"YTAMBIENTLIGHT_STATIC_IMAGE_DESC" = "Seleccionar una imagen personalizada para el modo estático";
+"YTAMBIENTLIGHT_WATCHNEXT_DESC" = "Aplicar el efecto ambiental a la barra lateral WatchNext";
+"YTAMBIENTLIGHT_FULLSCREEN_DESC" = "Aplicar el efecto ambiental al reproductor a pantalla completa";
+"YTAMBIENTLIGHT_DISABLE_FADE_DESC" = "Desactivar la animación de desvanecimiento dinámico de YouTube";
+"YTAMBIENTLIGHT_SYNC_PLAYER_DESC" = "Sincronizar colores ambientales con el reproductor de video";

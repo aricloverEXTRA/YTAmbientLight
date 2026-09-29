@@ -1,0 +1,14 @@
+Package: com.aricloveryextra.ytambientlight
+Name: YTAmbientLight
+Version: 1.0.0
+Architecture: iphoneos-arm
+Description: Customizable Ambient Mode for YouTube based on the Chrome extension "Ambient Light for YouTube". Makes ambient mode fully customizable with dynamic blur, static color, static image modes, adjustable intensity/blur, video color extraction, and removes fading animations.
+Maintainer: aricloverEXTRA
+Author: aricloverEXTRA
+Section: Tweaks
+Depends: mobilesubstrate, firmware-iphoneos (>= 15.0)
+Conflicts:
+Provides:
+Replaces:
+Priority: optional
+Homepage: https://github.com/aricloverEXTRA/YTAmbientLight

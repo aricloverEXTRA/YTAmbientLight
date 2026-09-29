@@ -1,0 +1,34 @@
+/* YTAmbientLight - Français */
+
+"YTAMBIENTLIGHT_TITLE" = "Lumière Ambiante";
+"YTAMBIENTLIGHT_ENABLED" = "Activer la Lumière Ambiante";
+"YTAMBIENTLIGHT_MODE" = "Mode Lumière Ambiante";
+"YTAMBIENTLIGHT_COLOR" = "Couleur Lumière Ambiante";
+"YTAMBIENTLIGHT_INTENSITY" = "Intensité";
+"YTAMBIENTLIGHT_BLUR" = "Rayon de Flou";
+"YTAMBIENTLIGHT_USE_VIDEO" = "Extraire Couleurs Vidéo";
+"YTAMBIENTLIGHT_STATIC_IMAGE" = "Chemin Image Personnalisée";
+"YTAMBIENTLIGHT_WATCHNEXT" = "Appliquer à la Barre WatchNext";
+"YTAMBIENTLIGHT_FULLSCREEN" = "Appliquer au Plein Écran";
+"YTAMBIENTLIGHT_DISABLE_FADE" = "Désactiver Animation Fondu";
+"YTAMBIENTLIGHT_SYNC_PLAYER" = "Synchroniser Couleurs Lecteur";
+
+"YTAMBIENTLIGHT_MODE_DYNAMIC" = "Dynamique (Flou)";
+"YTAMBIENTLIGHT_MODE_STATIC_COLOR" = "Couleur Statique";
+"YTAMBIENTLIGHT_MODE_STATIC_IMAGE" = "Image Statique";
+"YTAMBIENTLIGHT_MODE_DISABLED" = "Désactivé";
+
+"YTAMBIENTLIGHT_IMAGE_PLACEHOLDER" = "/var/mobile/Documents/ambient.jpg";
+"YTAMBIENTLIGHT_GROUP_MAIN" = "Principal";
+"YTAMBIENTLIGHT_GROUP_ADVANCED" = "Avancé";
+"YTAMBIENTLIGHT_ENABLED_DESC" = "Activer un éclairage ambiant personnalisable pour le lecteur vidéo";
+"YTAMBIENTLIGHT_MODE_DESC" = "Choisir comment se comporte la lumière ambiante";
+"YTAMBIENTLIGHT_INTENSITY_DESC" = "Ajuster l'intensité de l'effet de lumière ambiante";
+"YTAMBIENTLIGHT_BLUR_DESC" = "Ajuster le rayon de flou pour l'effet dynamique";
+"YTAMBIENTLIGHT_COLOR_DESC" = "Choisir une couleur personnalisée pour le mode statique";
+"YTAMBIENTLIGHT_USE_VIDEO_DESC" = "Extraire automatiquement les couleurs ambiantes de la vidéo en cours";
+"YTAMBIENTLIGHT_STATIC_IMAGE_DESC" = "Sélectionner une image personnalisée pour le mode image statique";
+"YTAMBIENTLIGHT_WATCHNEXT_DESC" = "Appliquer l'effet ambiant à la barre latérale WatchNext";
+"YTAMBIENTLIGHT_FULLSCREEN_DESC" = "Appliquer l'effet ambiant au lecteur en plein écran";
+"YTAMBIENTLIGHT_DISABLE_FADE_DESC" = "Désactiver l'animation de fondu dynamique de YouTube";
+"YTAMBIENTLIGHT_SYNC_PLAYER_DESC" = "Synchroniser les couleurs ambiantes avec le lecteur vidéo";

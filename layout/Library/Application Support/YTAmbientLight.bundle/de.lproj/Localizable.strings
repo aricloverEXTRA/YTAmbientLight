@@ -1,0 +1,34 @@
+/* YTAmbientLight - Deutsch */
+
+"YTAMBIENTLIGHT_TITLE" = "Umgebungslicht";
+"YTAMBIENTLIGHT_ENABLED" = "Umgebungslicht Aktivieren";
+"YTAMBIENTLIGHT_MODE" = "Umgebungslicht Modus";
+"YTAMBIENTLIGHT_COLOR" = "Umgebungslicht Farbe";
+"YTAMBIENTLIGHT_INTENSITY" = "Intensität";
+"YTAMBIENTLIGHT_BLUR" = "Weichzeichner Radius";
+"YTAMBIENTLIGHT_USE_VIDEO" = "Farben aus Video Extrahieren";
+"YTAMBIENTLIGHT_STATIC_IMAGE" = "Benutzerdefinierter Bildpfad";
+"YTAMBIENTLIGHT_WATCHNEXT" = "Auf WatchNext-Seitenleiste Anwenden";
+"YTAMBIENTLIGHT_FULLSCREEN" = "Auf Vollbildplayer Anwenden";
+"YTAMBIENTLIGHT_DISABLE_FADE" = "Blend-Animation Deaktivieren";
+"YTAMBIENTLIGHT_SYNC_PLAYER" = "Mit Player-Farben Synchronisieren";
+
+"YTAMBIENTLIGHT_MODE_DYNAMIC" = "Dynamisch (Unschärfe)";
+"YTAMBIENTLIGHT_MODE_STATIC_COLOR" = "Statische Farbe";
+"YTAMBIENTLIGHT_MODE_STATIC_IMAGE" = "Statisches Bild";
+"YTAMBIENTLIGHT_MODE_DISABLED" = "Deaktiviert";
+
+"YTAMBIENTLIGHT_IMAGE_PLACEHOLDER" = "/var/mobile/Documents/ambient.jpg";
+"YTAMBIENTLIGHT_GROUP_MAIN" = "Haupt";
+"YTAMBIENTLIGHT_GROUP_ADVANCED" = "Erweitert";
+"YTAMBIENTLIGHT_ENABLED_DESC" = "Aktivieren Sie anpassbares Umgebungslicht für den Videoplayer";
+"YTAMBIENTLIGHT_MODE_DESC" = "Wählen Sie, wie sich das Umgebungslicht verhält";
+"YTAMBIENTLIGHT_INTENSITY_DESC" = "Passen Sie die Intensität des Umgebungslichteffekts an";
+"YTAMBIENTLIGHT_BLUR_DESC" = "Passen Sie den Weichzeichner-Radius für den dynamischen Effekt an";
+"YTAMBIENTLIGHT_COLOR_DESC" = "Wählen Sie eine benutzerdefinierte Farbe für den statischen Modus";
+"YTAMBIENTLIGHT_USE_VIDEO_DESC" = "Extrahieren Sie automatisch Umgebungslichtfarben aus dem abgespielten Video";
+"YTAMBIENTLIGHT_STATIC_IMAGE_DESC" = "Wählen Sie ein benutzerdefiniertes Bild für den statischen Bildmodus";
+"YTAMBIENTLIGHT_WATCHNEXT_DESC" = "Wenden Sie den Umgebungslichteffekt auf die WatchNext-Seitenleiste an";
+"YTAMBIENTLIGHT_FULLSCREEN_DESC" = "Wenden Sie den Umgebungslichteffekt auf den Vollbildplayer an";
+"YTAMBIENTLIGHT_DISABLE_FADE_DESC" = "Deaktivieren Sie YouTube's dynamische Blend-Animation";
+"YTAMBIENTLIGHT_SYNC_PLAYER_DESC" = "Synchronisieren Sie Umgebungslichtfarben mit dem Videoplayer";

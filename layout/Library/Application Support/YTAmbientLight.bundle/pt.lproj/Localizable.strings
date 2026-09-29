@@ -1,0 +1,34 @@
+/* YTAmbientLight - Português */
+
+"YTAMBIENTLIGHT_TITLE" = "Luz Ambiente";
+"YTAMBIENTLIGHT_ENABLED" = "Ativar Luz Ambiente";
+"YTAMBIENTLIGHT_MODE" = "Modo de Luz Ambiente";
+"YTAMBIENTLIGHT_COLOR" = "Cor da Luz Ambiente";
+"YTAMBIENTLIGHT_INTENSITY" = "Intensidade";
+"YTAMBIENTLIGHT_BLUR" = "Raio de Desfoque";
+"YTAMBIENTLIGHT_USE_VIDEO" = "Extrair Cores do Vídeo";
+"YTAMBIENTLIGHT_STATIC_IMAGE" = "Caminho da Imagem Personalizada";
+"YTAMBIENTLIGHT_WATCHNEXT" = "Aplicar à Barra Lateral WatchNext";
+"YTAMBIENTLIGHT_FULLSCREEN" = "Aplicar ao Player em Tela Cheia";
+"YTAMBIENTLIGHT_DISABLE_FADE" = "Desativar Animação de Desvanecimento";
+"YTAMBIENTLIGHT_SYNC_PLAYER" = "Sincronizar com Cores do Player";
+
+"YTAMBIENTLIGHT_MODE_DYNAMIC" = "Dinâmico (Desfoque)";
+"YTAMBIENTLIGHT_MODE_STATIC_COLOR" = "Cor Estática";
+"YTAMBIENTLIGHT_MODE_STATIC_IMAGE" = "Imagem Estática";
+"YTAMBIENTLIGHT_MODE_DISABLED" = "Desativado";
+
+"YTAMBIENTLIGHT_IMAGE_PLACEHOLDER" = "/var/mobile/Documents/ambient.jpg";
+"YTAMBIENTLIGHT_GROUP_MAIN" = "Principal";
+"YTAMBIENTLIGHT_GROUP_ADVANCED" = "Avançado";
+"YTAMBIENTLIGHT_ENABLED_DESC" = "Ativar luz ambiente personalizável para o player de vídeo";
+"YTAMBIENTLIGHT_MODE_DESC" = "Escolha como a luz ambiente se comporta";
+"YTAMBIENTLIGHT_INTENSITY_DESC" = "Ajustar a intensidade do efeito de luz ambiente";
+"YTAMBIENTLIGHT_BLUR_DESC" = "Ajustar o raio de desfoque para o efeito dinâmico";
+"YTAMBIENTLIGHT_COLOR_DESC" = "Escolher uma cor personalizada para o modo estático";
+"YTAMBIENTLIGHT_USE_VIDEO_DESC" = "Extrair automaticamente cores ambientes do vídeo em reprodução";
+"YTAMBIENTLIGHT_STATIC_IMAGE_DESC" = "Selecionar uma imagem personalizada para o modo de imagem estática";
+"YTAMBIENTLIGHT_WATCHNEXT_DESC" = "Aplicar o efeito de luz ambiente à barra lateral WatchNext";
+"YTAMBIENTLIGHT_FULLSCREEN_DESC" = "Aplicar o efeito de luz ambiente ao player em tela cheia";
+"YTAMBIENTLIGHT_DISABLE_FADE_DESC" = "Desativar a animação de desvanecimento dinâmico do YouTube";
+"YTAMBIENTLIGHT_SYNC_PLAYER_DESC" = "Sincronizar cores ambientes com o player de vídeo";

@@ -1,0 +1,34 @@
+/* YTAmbientLight - 日本語 */
+
+"YTAMBIENTLIGHT_TITLE" = "アンビエントライト";
+"YTAMBIENTLIGHT_ENABLED" = "アンビエントライトを有効にする";
+"YTAMBIENTLIGHT_MODE" = "アンビエントライトモード";
+"YTAMBIENTLIGHT_COLOR" = "アンビエントライトの色";
+"YTAMBIENTLIGHT_INTENSITY" = "強度";
+"YTAMBIENTLIGHT_BLUR" = "ぼかし半径";
+"YTAMBIENTLIGHT_USE_VIDEO" = "動画から色を抽出";
+"YTAMBIENTLIGHT_STATIC_IMAGE" = "カスタム画像パス";
+"YTAMBIENTLIGHT_WATCHNEXT" = "WatchNextサイドバーに適用";
+"YTAMBIENTLIGHT_FULLSCREEN" = "フルスクリーンプレイヤーに適用";
+"YTAMBIENTLIGHT_DISABLE_FADE" = "フェードアニメーションを無効化";
+"YTAMBIENTLIGHT_SYNC_PLAYER" = "プレーヤーの色と同期";
+
+"YTAMBIENTLIGHT_MODE_DYNAMIC" = "動的 (ぼかし)";
+"YTAMBIENTLIGHT_MODE_STATIC_COLOR" = "静的色";
+"YTAMBIENTLIGHT_MODE_STATIC_IMAGE" = "静的画像";
+"YTAMBIENTLIGHT_MODE_DISABLED" = "無効";
+
+"YTAMBIENTLIGHT_IMAGE_PLACEHOLDER" = "/var/mobile/Documents/ambient.jpg";
+"YTAMBIENTLIGHT_GROUP_MAIN" = "メイン";
+"YTAMBIENTLIGHT_GROUP_ADVANCED" = "詳細";
+"YTAMBIENTLIGHT_ENABLED_DESC" = "動画プレーヤーのカスタマイズ可能なアンビエントライトを有効にする";
+"YTAMBIENTLIGHT_MODE_DESC" = "アンビエントライトの動作を選択";
+"YTAMBIENTLIGHT_INTENSITY_DESC" = "アンビエントライト効果の強度を調整";
+"YTAMBIENTLIGHT_BLUR_DESC" = "動的アンビエント効果のぼかし半径を調整";
+"YTAMBIENTLIGHT_COLOR_DESC" = "静的カラーモードのカスタム色を選択";
+"YTAMBIENTLIGHT_USE_VIDEO_DESC" = "再生中の動画からアンビエントカラーを自動抽出";
+"YTAMBIENTLIGHT_STATIC_IMAGE_DESC" = "静的画像モードのカスタム画像を選択";
+"YTAMBIENTLIGHT_WATCHNEXT_DESC" = "WatchNextサイドバーにアンビエント効果を適用";
+"YTAMBIENTLIGHT_FULLSCREEN_DESC" = "フルスクリーンプレーヤーにアンビエント効果を適用";
+"YTAMBIENTLIGHT_DISABLE_FADE_DESC" = "YouTubeの動的フェードアニメーションを無効化";
+"YTAMBIENTLIGHT_SYNC_PLAYER_DESC" = "アンビエントカラーを動画プレーヤーと同期";
