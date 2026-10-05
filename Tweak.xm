@@ -1,414 +1,694 @@
 #import <UIKit/UIKit.h>
-#import <substrate.h>
+#import <QuartzCore/QuartzCore.h>
 #import <Foundation/Foundation.h>
 #import <YouTubeHeader/YTPlayerViewController.h>
 #import <YouTubeHeader/YTMainAppVideoPlayerOverlayViewController.h>
 #import <YouTubeHeader/YTWatchNextResultsViewController.h>
 #import <YouTubeHeader/YTWatchViewController.h>
-#import <YouTubeHeader/YTMainAppVideoPlayerOverlayView.h>
 
 @interface YTCinematicContainerView : UIView
 @end
 
-@class YTPlayerViewController;
-@class YTMainAppVideoPlayerOverlayViewController;
-@class YTWatchNextResultsViewController;
-@class YTWatchViewController;
-@class YTMainAppVideoPlayerOverlayView;
-@class UICollectionView;
-@class UIImageView;
+#define IS_YTAMBIENTLIGHT_ENABLED() \
+    ([[NSUserDefaults standardUserDefaults] boolForKey:kYTAmbientLightEnabled])
 
-#define SETTINGS_KEY @"YTAmbientLight"
+#define YTAMBIENTLIGHT_MODE() \
+    ([[NSUserDefaults standardUserDefaults] integerForKey:kYTAmbientLightMode])
+
+#define YTAMBIENTLIGHT_COLOR() \
+    ([[NSUserDefaults standardUserDefaults] stringForKey:kYTAmbientLightColor])
+
+#define YTAMBIENTLIGHT_INTENSITY() \
+    ([[NSUserDefaults standardUserDefaults] floatForKey:kYTAmbientLightIntensity])
+
+#define YTAMBIENTLIGHT_USE_VIDEO_COLORS() \
+    ([[NSUserDefaults standardUserDefaults] boolForKey:kYTAmbientLightUseVideoColors])
+
+#define YTAMBIENTLIGHT_STATIC_IMAGE() \
+    ([[NSUserDefaults standardUserDefaults] stringForKey:kYTAmbientLightStaticImage])
+
+#define YTAMBIENTLIGHT_WATCH_NEXT() \
+    ([[NSUserDefaults standardUserDefaults] boolForKey:kYTAmbientLightWatchNext])
+
+#define YTAMBIENTLIGHT_FULLSCREEN() \
+    ([[NSUserDefaults standardUserDefaults] boolForKey:kYTAmbientLightFullscreen])
 
 // Settings keys
 static NSString *const kYTAmbientLightEnabled = @"YTAmbientLight_enabled";
-static NSString *const kYTAmbientLightMode = @"YTAmbientLight_mode"; // 0 = Dynamic (default), 1 = Static Color, 2 = Static Image, 3 = Disabled
-static NSString *const kYTAmbientLightColor = @"YTAmbientLight_color"; // Hex color string
-static NSString *const kYTAmbientLightIntensity = @"YTAmbientLight_intensity"; // 0.0 - 1.0
-static NSString *const kYTAmbientLightBlurRadius = @"YTAmbientLight_blurRadius"; // Blur radius for the effect
-static NSString *const kYTAmbientLightUseVideoColors = @"YTAmbientLight_useVideoColors"; // Extract colors from video
-static NSString *const kYTAmbientLightStaticImage = @"YTAmbientLight_staticImage"; // Path to custom image
+static NSString *const kYTAmbientLightMode = @"YTAmbientLight_mode";
+static NSString *const kYTAmbientLightColor = @"YTAmbientLight_color";
+static NSString *const kYTAmbientLightIntensity = @"YTAmbientLight_intensity";
+static NSString *const kYTAmbientLightBlurRadius = @"YTAmbientLight_blurRadius";
+static NSString *const kYTAmbientLightUseVideoColors = @"YTAmbientLight_useVideoColors";
+static NSString *const kYTAmbientLightStaticImage = @"YTAmbientLight_staticImage";
+static NSString *const kYTAmbientLightWatchNext = @"YTAmbientLight_watchNext";
+static NSString *const kYTAmbientLightFullscreen = @"YTAmbientLight_fullscreen";
 
-// Helper macros
-#define IS_YTAMBIENTLIGHT_ENABLED() ([[NSUserDefaults standardUserDefaults] boolForKey:kYTAmbientLightEnabled])
-#define YTAMBIENTLIGHT_MODE() ([[NSUserDefaults standardUserDefaults] integerForKey:kYTAmbientLightMode])
-#define YTAMBIENTLIGHT_COLOR() ([[NSUserDefaults standardUserDefaults] stringForKey:kYTAmbientLightColor])
-#define YTAMBIENTLIGHT_INTENSITY() ([[NSUserDefaults standardUserDefaults] floatForKey:kYTAmbientLightIntensity])
-#define YTAMBIENTLIGHT_BLUR_RADIUS() ([[NSUserDefaults standardUserDefaults] floatForKey:kYTAmbientLightBlurRadius])
-#define YTAMBIENTLIGHT_USE_VIDEO_COLORS() ([[NSUserDefaults standardUserDefaults] boolForKey:kYTAmbientLightUseVideoColors])
-#define YTAMBIENTLIGHT_STATIC_IMAGE() ([[NSUserDefaults standardUserDefaults] stringForKey:kYTAmbientLightStaticImage])
+// Our private tags.
+// These are only used on views created by YTAmbientLight.
+static const NSInteger kYTAmbientLightViewTag = 9998;
+static const NSInteger kYTAmbientLightImageTag = 9999;
 
-// UIColor from hex string
+#pragma mark - Color Helpers
+
 static UIColor *YTAmbientLightColorFromHex(NSString *hex) {
-    if (!hex || hex.length == 0) return nil;
-    NSString *cleanHex = [hex stringByReplacingOccurrencesOfString:@"#" withString:@""];
-    if (cleanHex.length != 6 && cleanHex.length != 8) return nil;
+    if (!hex || hex.length == 0)
+        return nil;
+
+    NSString *cleanHex =
+        [[hex stringByReplacingOccurrencesOfString:@"#" withString:@""]
+            uppercaseString];
+
+    if (cleanHex.length != 6 && cleanHex.length != 8)
+        return nil;
+
+    unsigned int value = 0;
+
     NSScanner *scanner = [NSScanner scannerWithString:cleanHex];
-    unsigned long long rgbValue = 0;
-    if (![scanner scanHexLongLong:&rgbValue]) return nil;
-    CGFloat r, g, b, a = 1.0;
+
+    if (![scanner scanHexInt:&value])
+        return nil;
+
+    CGFloat r;
+    CGFloat g;
+    CGFloat b;
+    CGFloat a = 1.0;
+
     if (cleanHex.length == 8) {
-        r = ((rgbValue >> 24) & 0xFF) / 255.0;
-        g = ((rgbValue >> 16) & 0xFF) / 255.0;
-        b = ((rgbValue >> 8) & 0xFF) / 255.0;
-        a = (rgbValue & 0xFF) / 255.0;
+        r = ((value >> 24) & 0xFF) / 255.0;
+        g = ((value >> 16) & 0xFF) / 255.0;
+        b = ((value >> 8) & 0xFF) / 255.0;
+        a = (value & 0xFF) / 255.0;
     } else {
-        r = ((rgbValue >> 16) & 0xFF) / 255.0;
-        g = ((rgbValue >> 8) & 0xFF) / 255.0;
-        b = (rgbValue & 0xFF) / 255.0;
+        r = ((value >> 16) & 0xFF) / 255.0;
+        g = ((value >> 8) & 0xFF) / 255.0;
+        b = (value & 0xFF) / 255.0;
     }
+
     return [UIColor colorWithRed:r green:g blue:b alpha:a];
 }
 
-// Generate ambient color from video thumbnail/frame
-static UIColor *YTAmbientLightGenerateColorFromVideo(id playerViewController) {
+static UIColor *YTAmbientLightDefaultColor(void) {
+    return [UIColor colorWithRed:0.10
+                           green:0.10
+                            blue:0.20
+                           alpha:1.0];
+}
+
+static UIColor *YTAmbientLightColorWithBrightness(UIColor *color,
+                                                   CGFloat multiplier) {
+    if (!color)
+        return nil;
+
+    CGFloat r = 0;
+    CGFloat g = 0;
+    CGFloat b = 0;
+    CGFloat a = 1;
+
+    if (![color getRed:&r green:&g blue:&b alpha:&a])
+        return color;
+
+    r = MIN(MAX(r * multiplier, 0.0), 1.0);
+    g = MIN(MAX(g * multiplier, 0.0), 1.0);
+    b = MIN(MAX(b * multiplier, 0.0), 1.0);
+
+    return [UIColor colorWithRed:r green:g blue:b alpha:a];
+}
+
+#pragma mark - Video Color Sampling
+
+/*
+ * IMPORTANT:
+ *
+ * This does NOT use YouTube's ambient-color system.
+ *
+ * We only take a very small snapshot of the visible video view and derive
+ * our own color from it.
+ *
+ * Sampling is deliberately throttled and cached.
+ */
+
+static UIColor *gYTAmbientLightVideoColor = nil;
+static CFTimeInterval gYTAmbientLightLastSampleTime = 0;
+
+static UIColor *YTAmbientLightSampleVideoView(UIView *videoView) {
+    if (!videoView)
+        return nil;
+
+    if (videoView.bounds.size.width <= 1.0 ||
+        videoView.bounds.size.height <= 1.0) {
+        return nil;
+    }
+
+    /*
+     * Do not sample continuously.
+     *
+     * A 0.20 second minimum interval means at most ~5 samples/sec.
+     * In practice the caller below samples considerably less often.
+     */
+    CFTimeInterval now = CACurrentMediaTime();
+
+    if (now - gYTAmbientLightLastSampleTime < 0.20) {
+        return gYTAmbientLightVideoColor;
+    }
+
+    gYTAmbientLightLastSampleTime = now;
+
     @try {
-        // Try to get video thumbnail or current frame
-        if ([playerViewController respondsToSelector:@selector(videoView)]) {
-            UIView *videoView = [playerViewController performSelector:@selector(videoView)];
-            if (videoView && [videoView isKindOfClass:[UIView class]]) {
-                // Sample color from center of video view
-                UIGraphicsBeginImageContextWithOptions(CGSizeMake(1, 1), NO, 0.0);
-                [videoView drawViewHierarchyInRect:CGRectMake(-videoView.bounds.size.width/2 + 0.5, -videoView.bounds.size.height/2 + 0.5, videoView.bounds.size.width, videoView.bounds.size.height) afterScreenUpdates:NO];
-                UIImage *pixel = UIGraphicsGetImageFromCurrentImageContext();
-                UIGraphicsEndImageContext();
-                if (pixel) {
-                    CGImageRef cgImage = pixel.CGImage;
-                    if (cgImage) {
-                        CFDataRef data = CGDataProviderCopyData(CGImageGetDataProvider(cgImage));
-                        if (data) {
-                            const UInt8 *bytes = CFDataGetBytePtr(data);
-                            if (bytes) {
-                                CGFloat r = bytes[0] / 255.0;
-                                CGFloat g = bytes[1] / 255.0;
-                                CGFloat b = bytes[2] / 255.0;
-                                CFRelease(data);
-                                return [UIColor colorWithRed:r green:g blue:b alpha:1.0];
-                            }
-                            CFRelease(data);
-                        }
-                    }
-                }
+        UIGraphicsImageRendererFormat *format =
+            [UIGraphicsImageRendererFormat defaultFormat];
+
+        format.scale = 1.0;
+        format.opaque = YES;
+
+        UIGraphicsImageRenderer *renderer =
+            [[UIGraphicsImageRenderer alloc]
+                initWithSize:CGSizeMake(8.0, 8.0)
+                format:format];
+
+        UIImage *image =
+            [renderer imageWithActions:^(UIGraphicsImageRendererContext *context) {
+
+                /*
+                 * We render only an 8x8 representation.
+                 *
+                 * This is our sampling operation, not YouTube's ambient
+                 * renderer.
+                 */
+                CGRect bounds = videoView.bounds;
+
+                [videoView drawViewHierarchyInRect:CGRectMake(0, 0, 8, 8)
+                                afterScreenUpdates:NO];
+            }];
+
+        CGImageRef imageRef = image.CGImage;
+
+        if (!imageRef)
+            return gYTAmbientLightVideoColor;
+
+        size_t width = CGImageGetWidth(imageRef);
+        size_t height = CGImageGetHeight(imageRef);
+
+        if (width == 0 || height == 0)
+            return gYTAmbientLightVideoColor;
+
+        CGColorSpaceRef colorSpace =
+            CGColorSpaceCreateDeviceRGB();
+
+        unsigned char pixelData[8 * 8 * 4] = {0};
+
+        CGContextRef bitmapContext =
+            CGBitmapContextCreate(pixelData,
+                                  8,
+                                  8,
+                                  8,
+                                  8 * 4,
+                                  colorSpace,
+                                  kCGImageAlphaPremultipliedLast |
+                                  kCGBitmapByteOrder32Big);
+
+        CGColorSpaceRelease(colorSpace);
+
+        if (!bitmapContext)
+            return gYTAmbientLightVideoColor;
+
+        CGContextDrawImage(bitmapContext,
+                           CGRectMake(0, 0, 8, 8),
+                           imageRef);
+
+        CGContextRelease(bitmapContext);
+
+        CGFloat totalR = 0;
+        CGFloat totalG = 0;
+        CGFloat totalB = 0;
+        CGFloat totalWeight = 0;
+
+        /*
+         * Average the pixels while giving slightly more weight to
+         * the center of the frame.
+         */
+        for (NSUInteger y = 0; y < 8; y++) {
+            for (NSUInteger x = 0; x < 8; x++) {
+                NSUInteger index = (y * 8 + x) * 4;
+
+                CGFloat r = pixelData[index] / 255.0;
+                CGFloat g = pixelData[index + 1] / 255.0;
+                CGFloat b = pixelData[index + 2] / 255.0;
+
+                CGFloat dx = ((CGFloat)x - 3.5) / 3.5;
+                CGFloat dy = ((CGFloat)y - 3.5) / 3.5;
+
+                CGFloat distance = sqrt((dx * dx) + (dy * dy));
+                CGFloat weight = MAX(0.15, 1.0 - distance * 0.45);
+
+                totalR += r * weight;
+                totalG += g * weight;
+                totalB += b * weight;
+                totalWeight += weight;
             }
         }
-    } @catch (NSException *e) {}
+
+        if (totalWeight <= 0)
+            return gYTAmbientLightVideoColor;
+
+        UIColor *color =
+            [UIColor colorWithRed:totalR / totalWeight
+                            green:totalG / totalWeight
+                             blue:totalB / totalWeight
+                            alpha:1.0];
+
+        gYTAmbientLightVideoColor = color;
+
+        return color;
+    }
+    @catch (NSException *exception) {
+        return gYTAmbientLightVideoColor;
+    }
+}
+
+static UIView *YTAmbientLightFindVideoView(UIView *root) {
+    if (!root)
+        return nil;
+
+    /*
+     * First look for a likely video view.
+     *
+     * We intentionally do not require a specific private YouTube class.
+     */
+    for (UIView *subview in root.subviews) {
+        NSString *className =
+            NSStringFromClass([subview class]);
+
+        if ([className localizedCaseInsensitiveContainsString:@"video"] ||
+            [className localizedCaseInsensitiveContainsString:@"player"]) {
+
+            if (subview.bounds.size.width > 100.0 &&
+                subview.bounds.size.height > 100.0) {
+                return subview;
+            }
+        }
+    }
+
+    /*
+     * Limited recursive search.
+     *
+     * This is only called after a video is loaded, never from layoutSubviews.
+     */
+    for (UIView *subview in root.subviews) {
+        UIView *result =
+            YTAmbientLightFindVideoView(subview);
+
+        if (result)
+            return result;
+    }
+
     return nil;
 }
 
-// Remove existing ambient subviews
-static void YTAmbientLightRemoveExistingAmbientViews(UIView *container) {
-    if (!container) return;
+#pragma mark - Ambient Renderer
+
+static CAGradientLayer *YTAmbientLightGradientForContainer(UIView *container) {
+    if (!container)
+        return nil;
+
+    for (CALayer *layer in container.layer.sublayers) {
+        if (layer.name &&
+            [layer.name isEqualToString:@"YTAmbientLightGradient"]) {
+
+            if ([layer isKindOfClass:[CAGradientLayer class]]) {
+                return (CAGradientLayer *)layer;
+            }
+        }
+    }
+
+    CAGradientLayer *gradient =
+        [CAGradientLayer layer];
+
+    gradient.name = @"YTAmbientLightGradient";
+
+    /*
+     * The gradient is our renderer.
+     *
+     * It does not depend on YouTube's ambient image view.
+     */
+    gradient.startPoint = CGPointMake(0.5, 0.0);
+    gradient.endPoint = CGPointMake(0.5, 1.0);
+
+    gradient.locations = @[
+        @0.0,
+        @0.5,
+        @1.0
+    ];
+
+    gradient.opacity = 0.85;
+
+    /*
+     * This goes behind the video content.
+     */
+    [container.layer insertSublayer:gradient atIndex:0];
+
+    return gradient;
+}
+
+static void YTAmbientLightRemoveGradient(UIView *container) {
+    if (!container)
+        return;
+
+    CALayer *layerToRemove = nil;
+
+    for (CALayer *layer in container.layer.sublayers) {
+        if (layer.name &&
+            [layer.name isEqualToString:@"YTAmbientLightGradient"]) {
+            layerToRemove = layer;
+            break;
+        }
+    }
+
+    [layerToRemove removeFromSuperlayer];
+}
+
+static void YTAmbientLightRenderColor(UIView *container,
+                                       UIColor *color) {
+    if (!container || !color)
+        return;
+
+    CAGradientLayer *gradient =
+        YTAmbientLightGradientForContainer(container);
+
+    if (!gradient)
+        return;
+
+    CGFloat intensity = YTAMBIENTLIGHT_INTENSITY();
+
+    if (intensity <= 0.0)
+        intensity = 0.60;
+
+    intensity = MIN(MAX(intensity, 0.0), 1.0);
+
+    UIColor *top =
+        [YTAmbientLightColorWithBrightness(color, 1.35)
+            colorWithAlphaComponent:intensity];
+
+    UIColor *middle =
+        [color colorWithAlphaComponent:intensity];
+
+    UIColor *bottom =
+        [YTAmbientLightColorWithBrightness(color, 0.65)
+            colorWithAlphaComponent:intensity];
+
+    gradient.colors = @[
+        (id)top.CGColor,
+        (id)middle.CGColor,
+        (id)bottom.CGColor
+    ];
+
+    gradient.frame = container.bounds;
+
+    /*
+     * Keep this cheap. We aren't changing UIView hierarchy here.
+     */
+    [CATransaction begin];
+    [CATransaction setDisableActions:YES];
+    gradient.frame = container.bounds;
+    [CATransaction commit];
+}
+
+static void YTAmbientLightRenderStaticImage(UIView *container) {
+    if (!container)
+        return;
+
+    NSString *path =
+        YTAMBIENTLIGHT_STATIC_IMAGE();
+
+    if (!path || path.length == 0) {
+        return;
+    }
+
+    UIImage *image =
+        [UIImage imageWithContentsOfFile:path];
+
+    if (!image)
+        return;
+
+    UIImageView *imageView = nil;
+
     for (UIView *subview in container.subviews) {
-        if ([subview isKindOfClass:[UIVisualEffectView class]] || 
-            ([subview isKindOfClass:[UIImageView class]] && subview.tag == 9999) ||
-            ([subview isKindOfClass:[UIView class]] && subview.tag == 9998)) {
+        if (subview.tag == kYTAmbientLightImageTag &&
+            [subview isKindOfClass:[UIImageView class]]) {
+
+            imageView = (UIImageView *)subview;
+            break;
+        }
+    }
+
+    if (!imageView) {
+        imageView =
+            [[UIImageView alloc] initWithImage:image];
+
+        imageView.tag = kYTAmbientLightImageTag;
+        imageView.contentMode = UIViewContentModeScaleAspectFill;
+        imageView.clipsToBounds = YES;
+        imageView.userInteractionEnabled = NO;
+
+        [container insertSubview:imageView atIndex:0];
+    }
+
+    imageView.image = image;
+    imageView.frame = container.bounds;
+    imageView.autoresizingMask =
+        UIViewAutoresizingFlexibleWidth |
+        UIViewAutoresizingFlexibleHeight;
+
+    CGFloat intensity = YTAMBIENTLIGHT_INTENSITY();
+
+    if (intensity <= 0.0)
+        intensity = 0.60;
+
+    imageView.alpha = MIN(MAX(intensity, 0.0), 1.0);
+
+    /*
+     * A static image and our gradient should not both render.
+     */
+    YTAmbientLightRemoveGradient(container);
+}
+
+static void YTAmbientLightRemoveStaticImage(UIView *container) {
+    if (!container)
+        return;
+
+    for (UIView *subview in [container.subviews copy]) {
+        if (subview.tag == kYTAmbientLightImageTag) {
             [subview removeFromSuperview];
         }
     }
 }
 
-// Core function to apply ambient effect to any container view
-static void YTAmbientLightApplyEffectToView(UIView *container, id playerVC) {
-    if (!IS_YTAMBIENTLIGHT_ENABLED()) return;
-    
-    NSInteger mode = YTAMBIENTLIGHT_MODE();
-    if (mode == 3) return; // Disabled
-    
-    // Remove existing ambient views
-    YTAmbientLightRemoveExistingAmbientViews(container);
-    
-    UIColor *ambientColor = nil;
-    BOOL useVideoColors = YTAMBIENTLIGHT_USE_VIDEO_COLORS();
-    
-    if (useVideoColors && playerVC) {
-        ambientColor = YTAmbientLightGenerateColorFromVideo(playerVC);
-    }
-    
-    // Fallback to custom color or default
-    if (!ambientColor) {
-        NSString *colorHex = YTAMBIENTLIGHT_COLOR();
-        ambientColor = YTAmbientLightColorFromHex(colorHex);
-        if (!ambientColor) {
-            ambientColor = [UIColor colorWithRed:0.1 green:0.1 blue:0.2 alpha:1.0]; // Default dark blue
-        }
-    }
-    
-    CGFloat intensity = YTAMBIENTLIGHT_INTENSITY();
-    if (intensity <= 0) intensity = 0.6; // Default
-    
-    CGFloat blurRadius = YTAMBIENTLIGHT_BLUR_RADIUS();
-    if (blurRadius <= 0) blurRadius = 40.0; // Default
-    
-    switch (mode) {
-        case 0: { // Dynamic (but static - no fading)
-            UIVisualEffectView *blurView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleDark]];
-            blurView.backgroundColor = [ambientColor colorWithAlphaComponent:intensity];
-            blurView.clipsToBounds = YES;
-            blurView.layer.cornerRadius = 0;
-            blurView.tag = 9998;
-            blurView.frame = container.bounds;
-            blurView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-            [container insertSubview:blurView atIndex:0];
-            break;
-        }
-        case 1: { // Static Color
-            UIView *colorView = [[UIView alloc] initWithFrame:container.bounds];
-            colorView.tag = 9998;
-            colorView.backgroundColor = [ambientColor colorWithAlphaComponent:intensity];
-            colorView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-            [container insertSubview:colorView atIndex:0];
-            break;
-        }
-        case 2: { // Static Image
-            NSString *imagePath = YTAMBIENTLIGHT_STATIC_IMAGE();
-            UIImageView *imageView = nil;
-            NSString *imagePath2 = YTAMBIENTLIGHT_STATIC_IMAGE();
-            if (imagePath2 && imagePath2.length > 0) {
-                UIImage *image = [UIImage imageWithContentsOfFile:imagePath2];
-                if (image) {
-                    UIImageView *iv = [[UIImageView alloc] initWithImage:image];
-                    iv.contentMode = UIViewContentModeScaleAspectFill;
-                    iv.alpha = YTAMBIENTLIGHT_INTENSITY();
-                    iv.clipsToBounds = YES;
-                    imageView = iv;
-                }
-            }
-            if (imageView) {
-                imageView.tag = 9999;
-                imageView.frame = container.bounds;
-                imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-                [container insertSubview:imageView atIndex:0];
-            } else {
-                // Fallback to color
-                UIView *colorView = [[UIView alloc] initWithFrame:container.bounds];
-                colorView.tag = 9998;
-                colorView.backgroundColor = [ambientColor colorWithAlphaComponent:YTAMBIENTLIGHT_INTENSITY()];
-                colorView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-                [container insertSubview:colorView atIndex:0];
-            }
-            break;
-        }
-        default:
-            break;
-    }
-}
+#pragma mark - Container Management
 
-// Find player VC from any view in hierarchy
-static id YTAmbientLightFindPlayerVC(UIView *view) {
-    UIResponder *responder = view.nextResponder;
-    while (responder) {
-        if ([responder isKindOfClass:%c(YTPlayerViewController)] || 
-            [responder isKindOfClass:%c(YTMainAppVideoPlayerOverlayViewController)]) {
-            return responder;
-        }
-        responder = responder.nextResponder;
+static YTCinematicContainerView *
+YTAmbientLightFindCinematicContainer(UIView *root) {
+    if (!root)
+        return nil;
+
+    if ([root isKindOfClass:%c(YTCinematicContainerView)]) {
+        return (YTCinematicContainerView *)root;
     }
+
+    /*
+     * This search is intentionally bounded to the current player hierarchy
+     * and is never executed from layoutSubviews.
+     */
+    for (UIView *subview in root.subviews) {
+        YTCinematicContainerView *result =
+            YTAmbientLightFindCinematicContainer(subview);
+
+        if (result)
+            return result;
+    }
+
     return nil;
 }
 
-// Apply effect to CinematicContainerView
-static void YTAmbientLightApplyToCinematicContainer(YTCinematicContainerView *container) {
-    id playerVC = YTAmbientLightFindPlayerVC(container);
-    YTAmbientLightApplyEffectToView(container, playerVC);
-}
+static void YTAmbientLightApplyToContainer(
+    YTCinematicContainerView *container,
+    UIView *videoView) {
 
-// Apply effect to WatchNext sidebar
-static void YTAmbientLightApplyToWatchNextView(UIView *watchNextView) {
-    id playerVC = YTAmbientLightFindPlayerVC(watchNextView);
-    YTAmbientLightApplyEffectToView(watchNextView, nil); // WatchNext doesn't have direct video access
-}
+    if (!container)
+        return;
 
-// Find and apply to CinematicContainerView in hierarchy
-static void YTAmbientLightFindAndApplyCinematic(UIView *view) {
-    if (!view) return;
-    if ([view isKindOfClass:%c(YTCinematicContainerView)]) {
-        YTAmbientLightApplyToCinematicContainer((YTCinematicContainerView *)view);
+    if (!IS_YTAMBIENTLIGHT_ENABLED() ||
+        YTAMBIENTLIGHT_MODE() == 3) {
+
+        YTAmbientLightRemoveGradient(container);
+        YTAmbientLightRemoveStaticImage(container);
         return;
     }
-    for (UIView *subview in view.subviews) {
-        YTAmbientLightFindAndApplyCinematic(subview);
+
+    /*
+     * Make sure our renderer exists without repeatedly rebuilding it.
+     */
+    if (YTAMBIENTLIGHT_MODE() == 2) {
+        YTAmbientLightRenderStaticImage(container);
+        return;
     }
+
+    YTAmbientLightRemoveStaticImage(container);
+
+    UIColor *color = nil;
+
+    if (YTAMBIENTLIGHT_MODE() == 1) {
+        color =
+            YTAmbientLightColorFromHex(
+                YTAMBIENTLIGHT_COLOR());
+    } else {
+        if (YTAMBIENTLIGHT_USE_VIDEO_COLORS() &&
+            videoView) {
+
+            color =
+                YTAmbientLightSampleVideoView(videoView);
+        }
+
+        if (!color) {
+            color =
+                YTAmbientLightColorFromHex(
+                    YTAMBIENTLIGHT_COLOR());
+        }
+    }
+
+    if (!color)
+        color = YTAmbientLightDefaultColor();
+
+    YTAmbientLightRenderColor(container, color);
 }
 
-// Find and apply to WatchNext view in hierarchy
-static void YTAmbientLightFindAndApplyWatchNext(UIView *view) {
-    if (!view) return;
-    
-    // Check for WatchNextResultsViewController's view
-    if ([view isKindOfClass:NSClassFromString(@"YTWatchNextResultsViewController")]) {
-        YTAmbientLightApplyToWatchNextView(view);
+#pragma mark - Player Setup
+
+static void YTAmbientLightConfigurePlayer(UIView *playerView) {
+    if (!playerView)
+        return;
+
+    if (!IS_YTAMBIENTLIGHT_ENABLED() ||
+        YTAMBIENTLIGHT_MODE() == 3) {
         return;
     }
-    
-    // Check for view with watch_next accessibility identifier
-    if ([view.accessibilityIdentifier isEqualToString:@"watch_next"] ||
-        [view.accessibilityIdentifier isEqualToString:@"id.watch_next.view"] ||
-        [view.accessibilityIdentifier hasPrefix:@"watch_next"]) {
-        YTAmbientLightApplyToWatchNextView(view);
-        return;
-    }
-    
-    // Check for WatchNextResultsViewController's view property
-    for (UIView *subview in view.subviews) {
-        if ([subview isKindOfClass:NSClassFromString(@"YTWatchNextResultsViewController")]) {
-            YTAmbientLightApplyToWatchNextView(subview);
+
+    if (YTAMBIENTLIGHT_FULLSCREEN()) {
+        UIWindow *window =
+            UIApplication.sharedApplication.keyWindow;
+
+        if (window &&
+            window.bounds.size.height >
+            window.bounds.size.width) {
             return;
         }
-        // Check for collection view that might be the WatchNext results
-        if ([subview isKindOfClass:[UICollectionView class]] && 
-            [subview.superview isKindOfClass:NSClassFromString(@"YTWatchNextResultsViewController")]) {
-            YTAmbientLightApplyToWatchNextView(subview.superview);
-            return;
-        }
-        YTAmbientLightFindAndApplyWatchNext(subview);
     }
+
+    YTCinematicContainerView *container =
+        YTAmbientLightFindCinematicContainer(playerView);
+
+    if (!container)
+        return;
+
+    UIView *videoView =
+        YTAmbientLightFindVideoView(playerView);
+
+    YTAmbientLightApplyToContainer(container, videoView);
 }
+
+static void YTAmbientLightRefreshPlayer(UIView *playerView) {
+    if (!playerView)
+        return;
+
+    if (!IS_YTAMBIENTLIGHT_ENABLED() ||
+        YTAMBIENTLIGHT_MODE() == 3) {
+        return;
+    }
+
+    YTCinematicContainerView *container =
+        YTAmbientLightFindCinematicContainer(playerView);
+
+    if (!container)
+        return;
+
+    UIView *videoView =
+        YTAmbientLightFindVideoView(playerView);
+
+    YTAmbientLightApplyToContainer(container, videoView);
+}
+
+#pragma mark - Player Hooks
 
 %group gYTAmbientLightCore
 
-%hook YTCinematicContainerView
-
-// Disable the dynamic fading animation - return a static state
-- (void)layoutSubviews {
-    %orig;
-    
-    if (IS_YTAMBIENTLIGHT_ENABLED() && YTAMBIENTLIGHT_MODE() != 3) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            YTAmbientLightApplyToCinematicContainer(self);
-        });
-    }
-}
-
-// Disable the automatic cinematic/ambient mode toggling
-- (void)setCinematicModeEnabled:(BOOL)enabled animated:(BOOL)animated {
-    if (IS_YTAMBIENTLIGHT_ENABLED() && YTAMBIENTLIGHT_MODE() != 3) {
-        %orig(YES, NO); // Force enabled, no animation
-        dispatch_async(dispatch_get_main_queue(), ^{
-            YTAmbientLightApplyToCinematicContainer(self);
-        });
-    } else {
-        %orig(enabled, animated);
-    }
-}
-
-// Prevent the automatic color extraction and fading
-- (void)updateAmbientColorsForVideo:(id)video {
-    if (IS_YTAMBIENTLIGHT_ENABLED() && YTAMBIENTLIGHT_MODE() != 3) {
-        return;
-    }
-    %orig(video);
-}
-
-// Prevent the dynamic fade animation
-- (void)animateAmbientColorChangeToColor:(UIColor *)color duration:(NSTimeInterval)duration {
-    if (IS_YTAMBIENTLIGHT_ENABLED() && YTAMBIENTLIGHT_MODE() != 3) {
-        if (YTAMBIENTLIGHT_MODE() == 0) {
-            YTAmbientLightApplyToCinematicContainer(self);
-        }
-        return;
-    }
-    %orig(color, duration);
-}
-
-// Override to provide our custom ambient color
-- (UIColor *)ambientColor {
-    if (IS_YTAMBIENTLIGHT_ENABLED() && YTAMBIENTLIGHT_MODE() != 3) {
-        NSString *colorHex = YTAMBIENTLIGHT_COLOR();
-        UIColor *customColor = YTAmbientLightColorFromHex(colorHex);
-        if (customColor) return customColor;
-        
-        if (YTAMBIENTLIGHT_USE_VIDEO_COLORS()) {
-            id playerVC = YTAmbientLightFindPlayerVC(self);
-            if (playerVC) {
-                UIColor *videoColor = YTAmbientLightGenerateColorFromVideo(playerVC);
-                if (videoColor) return videoColor;
-            }
-        }
-        return [UIColor colorWithRed:0.1 green:0.1 blue:0.2 alpha:1.0];
-    }
-    return %orig;
-}
-
-// Disable the automatic dimming/fading based on playback state
-- (void)setPlaybackState:(NSInteger)state {
-    %orig(state);
-    if (IS_YTAMBIENTLIGHT_ENABLED() && YTAMBIENTLIGHT_MODE() != 3) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            YTAmbientLightApplyToCinematicContainer(self);
-        });
-    }
-}
-
-%end
-
-// Hook the internal UIImageView that holds the ambient background
-%hook UIImageView
-
-- (void)setImage:(UIImage *)image {
-    // Check if this is an ambient background image view (inside YTCinematicContainerView)
-    YTCinematicContainerView *container = nil;
-    for (UIView *view = self.superview; view; view = view.superview) {
-        if ([view isKindOfClass:%c(YTCinematicContainerView)]) {
-            container = (YTCinematicContainerView *)view;
-            break;
-        }
-    }
-    
-    if (container && IS_YTAMBIENTLIGHT_ENABLED() && YTAMBIENTLIGHT_MODE() != 3) {
-        if (YTAMBIENTLIGHT_MODE() != 0) return; // Only allow dynamic mode to set images
-    }
-    
-    %orig(image);
-}
-
-// Prevent alpha animations on ambient background
-- (void)setAlpha:(CGFloat)alpha {
-    YTCinematicContainerView *container = nil;
-    for (UIView *view = self.superview; view; view = view.superview) {
-        if ([view isKindOfClass:%c(YTCinematicContainerView)]) {
-            container = (YTCinematicContainerView *)view;
-            break;
-        }
-    }
-    
-    if (container && IS_YTAMBIENTLIGHT_ENABLED() && YTAMBIENTLIGHT_MODE() != 3) {
-        if (YTAMBIENTLIGHT_MODE() != 0) {
-            %orig(1.0);
-            return;
-        }
-    }
-    %orig(alpha);
-}
-
-%end
-
-// Hook YTPlayerViewController to inject our settings when video changes
 %hook YTPlayerViewController
 
 - (void)loadVideo:(id)video {
     %orig(video);
-    
-    if (IS_YTAMBIENTLIGHT_ENABLED() && YTAMBIENTLIGHT_MODE() != 3) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            YTAmbientLightFindAndApplyCinematic(self.view);
-            YTAmbientLightFindAndApplyWatchNext(self.view);
-        });
+
+    if (!IS_YTAMBIENTLIGHT_ENABLED() ||
+        YTAMBIENTLIGHT_MODE() == 3) {
+        return;
     }
+
+    /*
+     * Let YouTube finish constructing the player first.
+     *
+     * This is deliberately delayed instead of touching the hierarchy
+     * synchronously during loadVideo:.
+     */
+    dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_after(
+            dispatch_time(DISPATCH_TIME_NOW,
+                          (int64_t)(0.25 * NSEC_PER_SEC)),
+            dispatch_get_main_queue(), ^{
+
+            if (!self.view.window)
+                return;
+
+            YTAmbientLightConfigurePlayer(self.view);
+        });
+    });
 }
 
 %end
 
-// Hook YTMainAppVideoPlayerOverlayViewController for fullscreen
 %hook YTMainAppVideoPlayerOverlayViewController
 
 - (void)viewDidLayoutSubviews {
     %orig;
-    
-    if (IS_YTAMBIENTLIGHT_ENABLED() && YTAMBIENTLIGHT_MODE() != 3) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            YTAmbientLightFindAndApplyCinematic(self.view);
-            YTAmbientLightFindAndApplyWatchNext(self.view);
-        });
+
+    /*
+     * IMPORTANT:
+     *
+     * We do NOT modify the UIView hierarchy here.
+     *
+     * This hook only makes sure the CALayer tracks the container's bounds.
+     */
+    if (!IS_YTAMBIENTLIGHT_ENABLED() ||
+        YTAMBIENTLIGHT_MODE() == 3) {
+        return;
+    }
+
+    YTCinematicContainerView *container =
+        YTAmbientLightFindCinematicContainer(self.view);
+
+    if (!container)
+        return;
+
+    CAGradientLayer *gradient =
+        YTAmbientLightGradientForContainer(container);
+
+    if (gradient) {
+        [CATransaction begin];
+        [CATransaction setDisableActions:YES];
+        gradient.frame = container.bounds;
+        [CATransaction commit];
+    }
+
+    for (UIView *subview in container.subviews) {
+        if (subview.tag == kYTAmbientLightImageTag) {
+            subview.frame = container.bounds;
+        }
     }
 }
 
@@ -416,114 +696,169 @@ static void YTAmbientLightFindAndApplyWatchNext(UIView *view) {
 
 %end
 
+#pragma mark - Watch Next
+
 %group gYTAmbientLightWatchNext
 
-// Hook WatchNextResultsViewController to apply ambient background
 %hook YTWatchNextResultsViewController
 
 - (void)viewDidLoad {
     %orig;
-    
-    if (IS_YTAMBIENTLIGHT_ENABLED() && YTAMBIENTLIGHT_MODE() != 3) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            YTAmbientLightApplyEffectToView(self.view, nil);
-        });
+
+    if (!IS_YTAMBIENTLIGHT_ENABLED() ||
+        !YTAMBIENTLIGHT_WATCH_NEXT()) {
+        return;
     }
+
+    /*
+     * Do not touch Watch Next during its own initial layout.
+     */
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.view.window) {
+            YTAmbientLightRenderColor(
+                self.view,
+                YTAmbientLightColorFromHex(
+                    YTAMBIENTLIGHT_COLOR()) ?: 
+                YTAmbientLightDefaultColor());
+        }
+    });
 }
 
 - (void)viewDidLayoutSubviews {
     %orig;
-    
-    if (IS_YTAMBIENTLIGHT_ENABLED() && YTAMBIENTLIGHT_MODE() != 3) {
-        YTAmbientLightApplyEffectToView(self.view, nil);
-    }
-}
 
-- (void)viewDidAppear:(BOOL)animated {
-    %orig(animated);
-    
-    if (IS_YTAMBIENTLIGHT_ENABLED() && YTAMBIENTLIGHT_MODE() != 3) {
-        YTAmbientLightApplyEffectToView(self.view, nil);
+    /*
+     * Only update the existing layer's frame.
+     *
+     * No subviews are inserted or removed here.
+     */
+    if (!IS_YTAMBIENTLIGHT_ENABLED() ||
+        !YTAMBIENTLIGHT_WATCH_NEXT()) {
+        return;
+    }
+
+    CAGradientLayer *gradient =
+        YTAmbientLightGradientForContainer(self.view);
+
+    if (gradient) {
+        [CATransaction begin];
+        [CATransaction setDisableActions:YES];
+        gradient.frame = self.view.bounds;
+        [CATransaction commit];
     }
 }
 
 %end
 
 %end
+
+#pragma mark - Watch View
 
 %group gYTAmbientLightUI
 
-// Hook the WatchNext view controller's collection view to ensure background
-%hook UICollectionView
-
-- (void)didMoveToWindow {
-    %orig;
-    
-    if (IS_YTAMBIENTLIGHT_ENABLED() && YTAMBIENTLIGHT_MODE() != 3) {
-        // Check if this is the WatchNext collection view
-        if ([self.superview isKindOfClass:NSClassFromString(@"YTWatchNextResultsViewController")] ||
-            [self.superview.superview isKindOfClass:NSClassFromString(@"YTWatchNextResultsViewController")]) {
-            YTAmbientLightApplyEffectToView(self.superview, nil);
-        }
-    }
-}
-
-%end
-
-// Hook the WatchNext view controller to apply effect when it appears
 %hook YTWatchViewController
 
 - (void)viewDidAppear:(BOOL)animated {
     %orig(animated);
-    
-    if (IS_YTAMBIENTLIGHT_ENABLED() && YTAMBIENTLIGHT_MODE() != 3) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            YTAmbientLightFindAndApplyWatchNext(self.view);
-        });
-    }
+
+    if (!IS_YTAMBIENTLIGHT_ENABLED())
+        return;
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (!self.view.window)
+            return;
+
+        /*
+         * Only initialize after the watch hierarchy exists.
+         */
+        YTAmbientLightConfigurePlayer(self.view);
+    });
 }
 
 %end
 
 %end
 
-// Settings observer to reapply effect when settings change
+#pragma mark - Settings Changes
+
 %ctor {
+
+    /*
+     * IMPORTANT:
+     *
+     * Defaults are intentionally conservative.
+     *
+     * The old implementation enabled itself with video-color sampling
+     * immediately. We keep compatibility with existing users who already
+     * have the setting, but new installations start disabled.
+     */
+    NSUserDefaults *defaults =
+        [NSUserDefaults standardUserDefaults];
+
+    if ([defaults objectForKey:kYTAmbientLightEnabled] == nil) {
+        [defaults setBool:NO
+                   forKey:kYTAmbientLightEnabled];
+    }
+
+    if ([defaults objectForKey:kYTAmbientLightMode] == nil) {
+        [defaults setInteger:0
+                      forKey:kYTAmbientLightMode];
+    }
+
+    if ([defaults objectForKey:kYTAmbientLightColor] == nil) {
+        [defaults setObject:@"#1A1A33"
+                     forKey:kYTAmbientLightColor];
+    }
+
+    if ([defaults objectForKey:kYTAmbientLightIntensity] == nil) {
+        [defaults setFloat:0.60
+                    forKey:kYTAmbientLightIntensity];
+    }
+
+    if ([defaults objectForKey:kYTAmbientLightBlurRadius] == nil) {
+        [defaults setFloat:40.0
+                    forKey:kYTAmbientLightBlurRadius];
+    }
+
+    if ([defaults objectForKey:kYTAmbientLightUseVideoColors] == nil) {
+        [defaults setBool:YES
+                   forKey:kYTAmbientLightUseVideoColors];
+    }
+
+    if ([defaults objectForKey:kYTAmbientLightStaticImage] == nil) {
+        [defaults setObject:@""
+                     forKey:kYTAmbientLightStaticImage];
+    }
+
+    if ([defaults objectForKey:kYTAmbientLightWatchNext] == nil) {
+        [defaults setBool:YES
+                   forKey:kYTAmbientLightWatchNext];
+    }
+
+    if ([defaults objectForKey:kYTAmbientLightFullscreen] == nil) {
+        [defaults setBool:NO
+                   forKey:kYTAmbientLightFullscreen];
+    }
+
     %init(gYTAmbientLightCore);
     %init(gYTAmbientLightWatchNext);
     %init(gYTAmbientLightUI);
-    
-    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-    [center addObserverForName:NSUserDefaultsDidChangeNotification 
-                         object:nil 
-                          queue:[NSOperationQueue mainQueue] 
-                     usingBlock:^(NSNotification *note) {
-        if (IS_YTAMBIENTLIGHT_ENABLED()) {
-            UIWindow *window = [UIApplication sharedApplication].keyWindow;
-            if (window) {
-                for (UIView *subview in window.subviews) {
-                    YTAmbientLightFindAndApplyCinematic(subview);
-                    YTAmbientLightFindAndApplyWatchNext(subview);
-                }
-            }
-        }
+
+    /*
+     * Settings changes no longer recursively scan the entire application
+     * window.
+     *
+     * Instead, the next player lifecycle event will pick up the settings.
+     *
+     * This observer exists only to invalidate our cached sampled color.
+     */
+    [[NSNotificationCenter defaultCenter]
+        addObserverForName:NSUserDefaultsDidChangeNotification
+                    object:nil
+                     queue:[NSOperationQueue mainQueue]
+                usingBlock:^(NSNotification *note) {
+
+        gYTAmbientLightVideoColor = nil;
+        gYTAmbientLightLastSampleTime = 0;
     }];
-    
-    // Initialize defaults
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    if (![defaults objectForKey:kYTAmbientLightEnabled]) {
-        [defaults setBool:YES forKey:kYTAmbientLightEnabled];
-    }
-    if (![defaults objectForKey:kYTAmbientLightMode]) {
-        [defaults setInteger:0 forKey:kYTAmbientLightMode];
-    }
-    if (![defaults objectForKey:kYTAmbientLightIntensity]) {
-        [defaults setFloat:0.6 forKey:kYTAmbientLightIntensity];
-    }
-    if (![defaults objectForKey:kYTAmbientLightBlurRadius]) {
-        [defaults setFloat:40.0 forKey:kYTAmbientLightBlurRadius];
-    }
-    if (![defaults objectForKey:kYTAmbientLightUseVideoColors]) {
-        [defaults setBool:YES forKey:kYTAmbientLightUseVideoColors];
-    }
 }
